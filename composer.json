@@ -1,12 +1,12 @@
 {
-	"name": "white-frame/http",
-	"description": "Prebuilt http components for white frame",
-	"autoload": {
-		"psr-4": {
-			"WhiteFrame\\Http\\" : "src/"
-		}
-	},
-	"require": {
-
-	}
+  "name": "white-frame/http",
+  "description": "Prebuilt http components for white frame",
+  "autoload": {
+    "psr-4": {
+      "WhiteFrame\\Http\\": "src/"
+    }
+  },
+  "require": {
+    "illuminate/support": "5.1.*"
+  }
 }

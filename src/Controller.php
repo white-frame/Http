@@ -1,6 +1,11 @@
 <?php
 namespace WhiteFrame\Http;
 
+use Illuminate\Http\Request;
+use WhiteFrame\Helloquent\Model;
+use WhiteFrame\Helloquent\Repository;
+use WhiteFrame\Http\Exceptions\EntityNotSpecifiedException;
+
 /**
  * Class Controller
  */
@@ -10,9 +15,13 @@ class Controller extends \App\Http\Controllers\Controller
 
 	/**
 	 * @return Model
+	 * @throws EntityNotSpecifiedException
 	 */
 	public function getModel()
 	{
+		if(empty($this->entity))
+			throw new EntityNotSpecifiedException("No valid entity found for controller " . get_class($this));
+
 		return new $this->entity();
 	}
 
@@ -40,18 +49,15 @@ class Controller extends \App\Http\Controllers\Controller
 	 */
 	public function index(Request $request)
 	{
+		if($request->has('dynatable'))
+			return $this->getDynatable($request);
+
 		return $this->make()
 			->resource($this->getRepository()->all()->search($request->input('q', ''))->limit(100)->get())
-			->view($this->getViewPath() . '.index', [
-				'dynatable' => new Dynatable($this->getRepository()->getModel())
-			]);
+			->view($this->getViewPath() . '.index');
 	}
 
-	/**
-	 * @param Request $request
-	 * @throws \Exception
-	 */
-	public function dynatable(Request $request)
+	protected function getDynatable(Request $request)
 	{
 		$datas = $this->getRepository()->all()->toDynatable($request->all())->make();
 

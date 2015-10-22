@@ -57,24 +57,13 @@ class Controller extends \App\Http\Controllers\Controller
 			->view($this->getViewPath() . '.index');
 	}
 
+	/**
+	 * @param Request $request
+	 * @return mixed
+     */
 	protected function getDynatable(Request $request)
 	{
-		$datas = $this->getRepository()->all()->toDynatable($request->all())->make();
-
-		$response = new DynatableResponse($this->getRepository(), $datas);
-
-		switch ($request->input('format', 'json')) {
-			default:
-			case 'json':
-				return $response->toJson();
-				break;
-			case 'csv':
-				return $response->toCsv(true);
-				break;
-			case 'xls':
-				return $response->toExcel(true);
-				break;
-		}
+		return $this->getRepository()->all()->toDynatable($request->all())->make();
 	}
 
 	/**

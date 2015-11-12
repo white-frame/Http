@@ -1,6 +1,7 @@
 <?php namespace WhiteFrame\Http;
 
 use Illuminate\Support\ServiceProvider;
+use Laracasts\Flash\FlashServiceProvider;
 
 /**
  * Class HttpServiceProvider
@@ -20,7 +21,8 @@ class HttpServiceProvider extends ServiceProvider
      */
     public function register()
     {
-
+        // Register 3rd party providers
+        $this->app->register(FlashServiceProvider::class);
     }
 
     /**

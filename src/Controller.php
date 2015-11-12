@@ -74,7 +74,7 @@ class Controller extends \App\Http\Controllers\Controller
 	public function create()
 	{
 		return view($this->getViewPath() . '.create', [
-			'entity' => $this->getRepository()->getModel()
+			'entity' => $this->getModel()
 		]);
 	}
 

@@ -16,6 +16,6 @@
   "require": {
     "illuminate/support": "5.1.*",
     "laracasts/flash": "~1.3",
-    "white-frame/white-frame": "dev-master"
+    "white-frame/white-frame": "0.*"
   }
 }

@@ -1,16 +1,19 @@
-<?php
-namespace WhiteFrame\Http;
+<?php namespace WhiteFrame\Http\Controller;
 
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use WhiteFrame\Helloquent\Model;
-use WhiteFrame\Helloquent\Repository;
+use WhiteFrame\Http\Contracts\Model;
+use WhiteFrame\Http\Contracts\Repository;
 use WhiteFrame\Http\Exceptions\EntityNotSpecifiedException;
 
 /**
- * Class Controller
+ * Class ResourceController
+ * @package WhiteFrame\Http\Controller
  */
-class Controller extends \App\Http\Controllers\Controller
+class ResourceController extends Controller
 {
+	use Helpers;
+	
 	protected $entity;
 
 	/**
@@ -60,7 +63,7 @@ class Controller extends \App\Http\Controllers\Controller
 	/**
 	 * @param Request $request
 	 * @return mixed
-     */
+	 */
 	protected function getDynatable(Request $request)
 	{
 		return $this->getRepository()->all()->toDynatable($request->all())->make();
@@ -137,24 +140,4 @@ class Controller extends \App\Http\Controllers\Controller
 	{
 		return $this->run()->destroy($id);
 	}
-
-    /**
-     * Get a automated controller worker
-     *
-     * @return ControllerWorker
-     */
-    public function run()
-    {
-        return new ControllerWorker($this);
-    }
-
-    /**
-     * Make a manual automated response
-     *
-     * @return Response
-     */
-    public function make()
-    {
-        return new Response();
-    }
 }

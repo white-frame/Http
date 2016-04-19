@@ -1,4 +1,4 @@
-<?php namespace WhiteFrame\Http\Contracts;
+<?php namespace WhiteFrame\Http\Contracts\Eloquent;
 
 /**
  * Interface Repository

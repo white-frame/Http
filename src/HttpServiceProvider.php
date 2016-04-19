@@ -20,10 +20,16 @@ class HttpServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        // Handling errors
+        // Register the exception handler
         $this->app->singleton(
             \Illuminate\Contracts\Debug\ExceptionHandler::class,
-            \WhiteFrame\Http\Exceptions\Handler::class
+            \WhiteFrame\Http\ExceptionHandler::class
+        );
+
+        // Register the message handler
+        $this->app->singleton(
+            \WhiteFrame\Http\Contracts\MessageHandler::class,
+            \WhiteFrame\Http\SessionMessageHandler::class
         );
     }
 

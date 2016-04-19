@@ -1,5 +1,6 @@
 <?php namespace WhiteFrame\Http\Controller;
 
+use WhiteFrame\Http\Controller\Resource\Runner;
 use WhiteFrame\Http\Response\ResponseFactory;
 
 /**

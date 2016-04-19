@@ -36,7 +36,7 @@ class BrowserResponse implements ResponseType
 
 	public function view($view, $params)
 	{
-		$this->response = view($view, $params);
+		$this->response = new Response(view($view, $params));
 	}
 
 	public function redirect($url = null)
@@ -51,6 +51,7 @@ class BrowserResponse implements ResponseType
 		}
 
 		if(isset($this->message)) {
+			app('WhiteFrame\Http\Contracts\MessageHandler')->{$this->message['type']}($this->message['message']);
 			// flash()->{$this->message['type']}($this->message['message']);
 		}
 

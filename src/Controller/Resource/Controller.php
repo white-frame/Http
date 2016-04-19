@@ -1,16 +1,17 @@
-<?php namespace WhiteFrame\Http\Controller;
+<?php namespace WhiteFrame\Http\Controller\Resource;
 
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Controller as AppController;
 use Illuminate\Http\Request;
-use WhiteFrame\Http\Contracts\Model;
-use WhiteFrame\Http\Contracts\Repository;
+use WhiteFrame\Http\Contracts\Eloquent\Model;
+use WhiteFrame\Http\Contracts\Eloquent\Repository;
+use WhiteFrame\Http\Controller\Helpers;
 use WhiteFrame\Http\Exceptions\EntityNotSpecifiedException;
 
 /**
- * Class ResourceController
- * @package WhiteFrame\Http\Controller
+ * Class Controller
+ * @package WhiteFrame\Http\Controller\Resource
  */
-class ResourceController extends Controller
+class Controller extends AppController
 {
 	use Helpers;
 	

@@ -1,10 +1,10 @@
-<?php namespace WhiteFrame\Http\Controller;
+<?php namespace WhiteFrame\Http\Controller\Resource;
 
 use WhiteFrame\Http\Contracts\Model;
 
 /**
  * Class Runner
- * @package WhiteFrame\Http\Controller
+ * @package WhiteFrame\Http\Controller\Resource
  */
 class Runner
 {

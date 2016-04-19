@@ -140,7 +140,7 @@ class ResponseFactory extends Response
 	public function send()
 	{
 		if($this->request->ajax()) {
-			if($this->types->get('ajax')->hasResponse()) {
+			if($this->types->get('ajax')->hasValidReponse()) {
 				$this->types->get('ajax')->get()->send();
 			}
 			else {

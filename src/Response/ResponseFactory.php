@@ -7,7 +7,7 @@ use League\Fractal\Resource\Item as FractalItem;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Symfony\Component\HttpFoundation\Response;
-use WhiteFrame\Http\Contracts\Model;
+use WhiteFrame\Http\Contracts\Eloquent\Model;
 use WhiteFrame\Http\Contracts\ResponseType;
 
 /**
@@ -52,6 +52,11 @@ class ResponseFactory extends Response
 		return $this;
 	}
 
+	public function warning($message = null)
+	{
+		return $this->fail($message);
+	}
+
 	/**
 	 * @param null $message
 	 */
@@ -81,6 +86,15 @@ class ResponseFactory extends Response
 	}
 
 	/**
+	 * @param Model $model
+	 * @return ResponseFactory
+	 */
+	public function model(Model $model)
+	{
+		return $this->item($model);
+	}
+
+	/**
 	 * @param EloquentCollection $models
 	 */
 	public function items(EloquentCollection $models)
@@ -98,6 +112,30 @@ class ResponseFactory extends Response
 		return $this;
 	}
 
+	/**
+	 * @param $models
+	 * @return ResponseFactory
+	 */
+	public function models($models)
+	{
+		return $this->items($models);
+	}
+
+	/**
+	 * @param $datas
+	 */
+	public function datas($datas)
+	{
+		$this->types->get('ajax')->datas($datas);
+
+		return $this;
+	}
+
+	/**
+	 * @param $view
+	 * @param array $params
+	 * @return $this
+	 */
 	public function view($view, $params = [])
 	{
 		$this->types->get('browser')->view($view, $params);
@@ -105,6 +143,10 @@ class ResponseFactory extends Response
 		return $this;
 	}
 
+	/**
+	 * @param null $url
+	 * @return mixed
+	 */
 	public function redirect($url = null)
 	{
 		return $this->types->get('browser')->redirect($url);

@@ -47,12 +47,15 @@ class AjaxResponse implements ResponseType
 
 		$content = [];
 
-		if(isset($this->status)) {
-			$content['status'] = $this->status;
-		}
+		// Success by default
+		$content['status'] = isset($this->status) ? $this->status : 'success';
+
+		// Message if exists
 		if(isset($this->message)) {
 			$content['message'] = $this->message;
 		}
+
+		// Insert datas
 		if(isset($this->datas)) {
 			$content['data'] = $this->datas;
 		}

@@ -72,7 +72,10 @@ class ResponseFactory extends Response
 	 */
 	public function item(Model $model)
 	{
-		if($model->hasTransformer()) {
+		if(is_null($model)) {
+			$datas = [];
+		}
+		elseif($model->hasTransformer()) {
 			$resource = new FractalItem($model, $model->transformer());
 			$datas = $this->fractal->createData($resource)->toArray()['data'];
 		}
@@ -90,7 +93,10 @@ class ResponseFactory extends Response
 	 */
 	public function collection(EloquentCollection $models)
 	{
-		if($models->first()->hasTransformer()) {
+		if($models->count() == 0) {
+			$datas = [];
+		}
+		elseif($models->first()->hasTransformer()) {
 			$resource = new FractalCollection($models, $models->first()->transformer());
 			$datas = $this->fractal->createData($resource)->toArray()['data'];
 		}

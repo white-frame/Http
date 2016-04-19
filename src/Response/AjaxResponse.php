@@ -14,7 +14,7 @@ class AjaxResponse implements ResponseType
 	protected $code;
 	protected $status;
 	protected $message;
-
+	protected $request;
 	protected $datas;
 
 	public function __construct(Request $request)
@@ -87,6 +87,11 @@ class AjaxResponse implements ResponseType
 
 	protected function getFormat()
 	{
-		return 'json';
+		if($this->request->has('callback')) {
+			return 'jsonp';
+		}
+		else {
+			return 'json';
+		}
 	}
 }

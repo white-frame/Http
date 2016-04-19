@@ -86,18 +86,9 @@ class ResponseFactory extends Response
 	}
 
 	/**
-	 * @param Model $model
-	 * @return ResponseFactory
-	 */
-	public function model(Model $model)
-	{
-		return $this->item($model);
-	}
-
-	/**
 	 * @param EloquentCollection $models
 	 */
-	public function items(EloquentCollection $models)
+	public function collection(EloquentCollection $models)
 	{
 		if($models->first()->hasTransformer()) {
 			$resource = new FractalCollection($models, $models->first()->getTransformer());
@@ -110,15 +101,6 @@ class ResponseFactory extends Response
 		$this->types->get('ajax')->datas($datas);
 
 		return $this;
-	}
-
-	/**
-	 * @param $models
-	 * @return ResponseFactory
-	 */
-	public function models($models)
-	{
-		return $this->items($models);
 	}
 
 	/**

@@ -140,10 +140,31 @@ class ResponseFactory extends Response
 	public function send()
 	{
 		if($this->request->ajax()) {
-			$this->types->get('ajax')->get()->send();
+			if($this->types->get('ajax')->hasResponse()) {
+				$this->types->get('ajax')->get()->send();
+			}
+			else {
+				app()->abort(406, "No response type set for ajax response.");
+			}
 		}
 		else {
-			$this->types->get('browser')->get()->send();
+			// In all cases, flash messages
+			$this->types->get('browser')->flashMessage();
+			
+			// Try to send browser response
+			if($this->types->get('browser')->hasValidReponse()) {
+				$this->types->get('browser')->get()->send();
+			}
+
+			// Or send ajax if we have no browser
+			elseif($this->types->get('ajax')->hasValidReponse()) {
+				$this->types->get('ajax')->get()->send();
+			}
+
+			// Fail if nothing
+			else {
+				app()->abort(406, "No response type set for browser response.");
+			}
 		}
 	}
 

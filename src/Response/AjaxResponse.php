@@ -10,7 +10,7 @@ use WhiteFrame\Http\Exceptions\UnknownAjaxResponseFormat;
  */
 class AjaxResponse implements ResponseType
 {
-	protected $is_set;
+	protected $hasReponse;
 	protected $code;
 	protected $status;
 	protected $message;
@@ -19,32 +19,37 @@ class AjaxResponse implements ResponseType
 
 	public function __construct(Request $request)
 	{
+		$this->code = 200;
+		$this->status = 'success';
+		$this->message = null;
+
 		$this->request = $request;
-		$this->is_set = false;
+		$this->hasReponse = false;
 	}
 
-	public function status($code = 200, $status = null, $message = null)
+	public function status($code = null, $status = null, $message = null)
 	{
-		$this->code = $code;
-		$this->status = $status;
-		$this->message = $message;
+		$this->code = isset($code) ? $code : $this->code;
+		$this->status = isset($status) ? $status : $this->status;
+		$this->message = isset($message) ? $message : $this->message;
 
-		$this->is_set = true;
+		$this->hasReponse = true;
 	}
 
 	public function datas($datas)
 	{
 		$this->datas = $datas;
 
-		$this->is_set = true;
+		$this->hasReponse = true;
+	}
+
+	public function hasValidReponse()
+	{
+		return $this->hasReponse;
 	}
 
 	public function get()
 	{
-		if($this->is_set) {
-			app()->abort(406, "No response type set for ajax response.");
-		}
-
 		$content = [];
 
 		// Success by default

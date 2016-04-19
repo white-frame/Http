@@ -44,21 +44,25 @@ class BrowserResponse implements ResponseType
 		return $this->response = redirect($url);
 	}
 
-	public function get()
+	public function hasValidReponse()
 	{
-		if(is_null($this->response)) {
-			app()->abort(406, "No response type set for browser response.");
-		}
+		return !empty($this->response);
+	}
 
+	public function flashMessage()
+	{
 		if(isset($this->message)) {
 			// Handling fail to warning
 			$messageType = $this->message['type'] == 'fail' ? 'warning' : $this->message['type'];
-				
+
 			app('WhiteFrame\Http\Contracts\MessageHandler')->$messageType($this->message['message']);
 		}
+	}
 
+	public function get()
+	{
 		if(isset($this->code)) {
-			//$this->response->setStatusCode($this->code);
+			$this->response->setStatusCode($this->code);
 		}
 
 		return $this->response;

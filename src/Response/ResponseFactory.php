@@ -74,7 +74,7 @@ class ResponseFactory extends Response
 	{
 		if($model->hasTransformer()) {
 			$resource = new FractalItem($model, $model->transformer());
-			$datas = $this->fractal->createData($resource)->toArray();
+			$datas = $this->fractal->createData($resource)->toArray()['data'];
 		}
 		else {
 			$datas = $model->toArray();
@@ -92,7 +92,7 @@ class ResponseFactory extends Response
 	{
 		if($models->first()->hasTransformer()) {
 			$resource = new FractalCollection($models, $models->first()->transformer());
-			$datas = $this->fractal->createData($resource)->toArray();
+			$datas = $this->fractal->createData($resource)->toArray()['data'];
 		}
 		else {
 			$datas = $models->toArray();

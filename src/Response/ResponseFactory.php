@@ -73,7 +73,7 @@ class ResponseFactory extends Response
 	public function item(Model $model)
 	{
 		if($model->hasTransformer()) {
-			$resource = new FractalItem($model, $model->getTransformer());
+			$resource = new FractalItem($model, $model->transformer());
 			$datas = $this->fractal->createData($resource)->toArray();
 		}
 		else {
@@ -91,7 +91,7 @@ class ResponseFactory extends Response
 	public function collection(EloquentCollection $models)
 	{
 		if($models->first()->hasTransformer()) {
-			$resource = new FractalCollection($models, $models->first()->getTransformer());
+			$resource = new FractalCollection($models, $models->first()->transformer());
 			$datas = $this->fractal->createData($resource)->toArray();
 		}
 		else {
@@ -150,7 +150,7 @@ class ResponseFactory extends Response
 		else {
 			// In all cases, flash messages
 			$this->types->get('browser')->flashMessage();
-			
+
 			// Try to send browser response
 			if($this->types->get('browser')->hasValidReponse()) {
 				$this->types->get('browser')->get()->send();

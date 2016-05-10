@@ -20,7 +20,7 @@ class ExceptionHandler extends \App\Exceptions\Handler
 	{
 		if($request->ajax()) {
 			$response = new AjaxResponse($request);
-			$response->status(500, 'error', $this->getAjaxMessage($e));
+			$response->status($request->has('callback') ? 200 : 500, 'error', $this->getAjaxMessage($e));
 			return $response->get();
 		}
 		else {

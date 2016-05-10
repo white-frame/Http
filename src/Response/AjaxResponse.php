@@ -14,6 +14,7 @@ class AjaxResponse implements ResponseType
 	protected $code;
 	protected $status;
 	protected $message;
+	protected $metas;
 	protected $request;
 	protected $datas;
 
@@ -22,24 +23,31 @@ class AjaxResponse implements ResponseType
 		$this->code = 200;
 		$this->status = 'success';
 		$this->message = null;
+		$this->metas = [];
 
 		$this->request = $request;
 		$this->hasReponse = false;
 	}
 
-	public function status($code = null, $status = null, $message = null)
+	public function status($code = null, $status = null, $message = null, $metas = [])
 	{
 		$this->code = isset($code) ? $code : $this->code;
 		$this->status = isset($status) ? $status : $this->status;
 		$this->message = isset($message) ? $message : $this->message;
+		$this->metas = !empty($metas) ? $metas : $this->metas;
 
+		$this->hasReponse = true;
+	}
+
+	public function metas($metas)
+	{
+		$this->metas = $metas;
 		$this->hasReponse = true;
 	}
 
 	public function datas($datas)
 	{
 		$this->datas = $datas;
-
 		$this->hasReponse = true;
 	}
 
@@ -63,6 +71,11 @@ class AjaxResponse implements ResponseType
 		// Insert datas
 		if(isset($this->datas)) {
 			$content['data'] = $this->datas;
+		}
+
+		// Add additional meta if exists
+		if(!empty($this->metas)) {
+			$content = array_merge($content, $this->metas);
 		}
 
 		switch ($this->getFormat())

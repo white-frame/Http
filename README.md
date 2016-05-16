@@ -2,7 +2,7 @@
 
 Predefined http `Controllers` for `WhiteFrame\Helloquent` models, tools for API responses.
 
-## Usage
+## Helpers
 
 The main usage of this package is to power up your controllers.
 
@@ -11,12 +11,14 @@ Add the `WhiteFrame\Http\Controller\Helpers` trait into your controller and you 
 * [`$this->response()`](https://github.com/white-frame/http/wiki/Response) : return a `Response`.
 * [`$this->run()`](https://github.com/white-frame/http/wiki/Runner) : return a `Runner`.
 
-## Components
+## REST Controller
 
-#### [Response](https://github.com/white-frame/http/wiki/Response)
+Simply extends your controller with `WhiteFrame\Http\Controller\Resource\Controller`.
 
-Make http responses for ajax and browser queries in a single return.
+```php
+use WhiteFrame\Http\Controller\Resource\Controller;
 
-#### [Runner](https://github.com/white-frame/http/wiki/Runner)
-
-Execute traditionnal REST controller methods for a [WhiteFrame\Helloquent](https://github.com/white-frame/helloquent) model.
+class UserController extends Controller
+{
+    protected $entity = 'Path\To\User';
+}

@@ -1,8 +1,10 @@
 # Http
 
-Simple http `Controllers` layout for `WhiteFrame\Helloquent` REST models and response helpers for browser and api response.
+Simple http Controller layout for `WhiteFrame\Helloquent` REST models and response helpers for browser and api response.
 
 ## REST Model Controller
+
+This controller will require a model with valid `Presenter`, `Renderer`, `Transformer` (for API), `Repository`, and a valid endpoint.
 
 Simply extends your controller with `WhiteFrame\Http\Controller\Resource\Controller`.
 

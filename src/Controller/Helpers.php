@@ -16,12 +16,4 @@ trait Helpers
 	{
 		return app('WhiteFrame\Http\Response\ResponseFactory');
 	}
-
-	/**
-	 * @return Runner
-	 */
-	public function run()
-	{
-		return app('WhiteFrame\Http\Controller\Runner');
-	}
 }

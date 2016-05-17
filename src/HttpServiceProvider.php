@@ -1,6 +1,7 @@
 <?php namespace WhiteFrame\Http;
 
 use Illuminate\Support\ServiceProvider;
+use WhiteFrame\Support\Framework;
 
 /**
  * Class HttpServiceProvider
@@ -20,6 +21,8 @@ class HttpServiceProvider extends ServiceProvider
      */
     public function register()
     {
+        Framework::registerPackage('http');
+
         // Register the exception handler
         $this->app->singleton(
             \Illuminate\Contracts\Debug\ExceptionHandler::class,

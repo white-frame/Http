@@ -21,4 +21,4 @@ class UserController extends Controller
 
 Add the `WhiteFrame\Http\Controller\Helpers` trait into your controller and you will have the following helpers :
 
-* [`$this->response()`](https://github.com/white-frame/http/wiki/Response) : return a `Response`.
+* [`$this->response()`](https://github.com/white-frame/http/wiki/Response) : return a multi format `Response`.

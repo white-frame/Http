@@ -46,7 +46,7 @@ class BrowserResponse implements ResponseType
 
 	public function redirect($url = null)
 	{
-		return $this->response = redirect($url);
+		$this->response = redirect($url);
 	}
 
 	public function hasValidReponse()

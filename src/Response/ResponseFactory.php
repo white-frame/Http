@@ -137,7 +137,9 @@ class ResponseFactory extends Response
 	 */
 	public function redirect($url = null)
 	{
-		return $this->types->get('browser')->redirect($url);
+		$this->types->get('browser')->redirect($url);
+
+		return $this;
 	}
 
 	/**

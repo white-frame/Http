@@ -7,7 +7,7 @@ use League\Fractal\Resource\Item as FractalItem;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Symfony\Component\HttpFoundation\Response;
-use WhiteFrame\Http\Contracts\Eloquent\Model;
+use WhiteFrame\Helloquent\Model;
 use WhiteFrame\Http\Contracts\ResponseType;
 
 /**
@@ -145,12 +145,12 @@ class ResponseFactory extends Response
 	 */
 	public function send()
 	{
-		if($this->request->ajax()) {
+		if($this->request->ajax() OR $this->request->has('callback')) {
 			if($this->types->get('ajax')->hasValidReponse()) {
 				$this->types->get('ajax')->get()->send();
 			}
 			else {
-				app()->abort(406, "No response type set for ajax response.");
+				app()->abort(406, "No response type set for ajax/jsonp response.");
 			}
 		}
 		else {

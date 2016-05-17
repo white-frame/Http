@@ -36,7 +36,12 @@ class BrowserResponse implements ResponseType
 
 	public function view($view, $params)
 	{
-		$this->response = new Response(view($view, $params));
+		if(is_a($view, 'Illuminate\View\View')) {
+			$this->response = new Response($view);
+		}
+		else {
+			$this->response = new Response(view($view, $params));
+		}
 	}
 
 	public function redirect($url = null)

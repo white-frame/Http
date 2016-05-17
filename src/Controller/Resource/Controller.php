@@ -24,26 +24,9 @@ class Controller extends AppController
 	public function getModel()
 	{
 		if(empty($this->entity))
-			throw new EntityNotSpecifiedException("No valid entity found for controller " . get_class($this));
+			throw new EntityNotSpecifiedException("No valid entity found for controller " . get_class($this) . '. Please specify a valid $entity property.');
 
 		return new $this->entity();
-	}
-
-	/**
-	 * @return Repository
-	 * @throws \Exception
-	 */
-	public function getRepository()
-	{
-		return $this->getModel()->getRepository();
-	}
-
-	/**
-	 * @return string
-	 */
-	public function getViewPath()
-	{
-		return $this->getModel()->getViewPath();
 	}
 
 	/**
@@ -56,9 +39,9 @@ class Controller extends AppController
 		if($request->has('dynatable'))
 			return $this->getDynatable($request);
 
-		return $this->make()
-			->resource($this->getRepository()->all()->search($request->input('q', ''))->limit(100)->get())
-			->view($this->getViewPath() . '.index');
+		return $this->response()
+			->collection($this->getModel()->search($request->input('q', ''))->limit(100)->get())
+			->view($this->getModel()->render()->index());
 	}
 
 	/**
@@ -67,7 +50,7 @@ class Controller extends AppController
 	 */
 	protected function getDynatable(Request $request)
 	{
-		return $this->getRepository()->all()->toDynatable($request->all())->make();
+		return $this->getModel()->toDynatable($request->all())->make();
 	}
 
 	/**
@@ -77,9 +60,8 @@ class Controller extends AppController
 	 */
 	public function create()
 	{
-		return view($this->getViewPath() . '.create', [
-			'entity' => $this->getModel()
-		]);
+		return $this->response()
+			->view($this->getModel()->render()->create());
 	}
 
 	/**
@@ -90,7 +72,11 @@ class Controller extends AppController
 	 */
 	public function store(Request $request)
 	{
-		return $this->run()->store($request->all());
+		$this->getModel()->getRepository()->create($request->all());
+
+		return $this->response()
+			->success("L'élément a été créée avec succès.")
+			->redirect($this->getModel()->endpoint());
 	}
 
 	/**
@@ -101,9 +87,11 @@ class Controller extends AppController
 	 */
 	public function show($id)
 	{
-		return view($this->getViewPath() . '.show', [
-			'entity' => $this->getRepository()->getById($id)
-		]);
+		$entity = $this->getModel()->getRepository()->getById($id);
+
+		return $this->response()
+			->item($entity)
+			->view($entity->render()->show());
 	}
 
 	/**
@@ -114,9 +102,8 @@ class Controller extends AppController
 	 */
 	public function edit($id)
 	{
-		return view($this->getViewPath() . '.edit', [
-			'entity' => $this->getRepository()->getById($id)
-		]);
+		return $this->response()
+			->view($this->getModel()->getRepository()->getById($id)->render()->edit());
 	}
 
 	/**
@@ -128,7 +115,11 @@ class Controller extends AppController
 	 */
 	public function update(Request $request, $id)
 	{
-		return $this->run()->update($id, $request->all());
+		$this->getModel()->getRepository()->update($id, $request->all());
+
+		return $this->response()
+			->success("L'élément a été modifiée avec succès.")
+			->redirect($this->getModel()->endpoint());
 	}
 
 	/**
@@ -139,6 +130,12 @@ class Controller extends AppController
 	 */
 	public function destroy($id)
 	{
-		return $this->run()->destroy($id);
+		$entities = $this->getModel()->getRepository();
+		$entity = $entities->getById($id);
+		$entity->delete();
+
+		return $this->response()
+			->success("Suppression de l'élément effectué avec succès.")
+			->redirect($this->getModel()->endpoint());
 	}
 }

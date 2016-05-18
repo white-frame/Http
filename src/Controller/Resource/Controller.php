@@ -5,6 +5,7 @@ use Illuminate\Http\Request;
 use WhiteFrame\Http\Contracts\Eloquent\Model;
 use WhiteFrame\Http\Contracts\Eloquent\Repository;
 use WhiteFrame\Http\Controller\Helpers;
+use WhiteFrame\Http\Exceptions\EndpointNotSpecifiedException;
 use WhiteFrame\Http\Exceptions\EntityNotSpecifiedException;
 use WhiteFrame\Http\Exceptions\ViewsNotSpecifiedException;
 
@@ -18,15 +19,7 @@ class Controller extends AppController
 	
 	protected $entity;
 	protected $views;
-
-	protected function getView($path)
-	{
-		if(empty($this->views)) {
-			throw new ViewsNotSpecifiedException("Empty views found for controller " . get_class($this) . '. Please specify a valid $views property.');
-		}
-
-		return $this->views . '.' . $path;
-	}
+	protected $endpoint;
 
 	/**
 	 * @return Model
@@ -38,6 +31,29 @@ class Controller extends AppController
 			throw new EntityNotSpecifiedException("No valid entity found for controller " . get_class($this) . '. Please specify a valid $entity property.');
 
 		return new $this->entity();
+	}
+
+	/**
+	 * @param $path
+	 * @return string
+	 * @throws ViewsNotSpecifiedException
+	 */
+	protected function getView($path)
+	{
+		if(empty($this->views)) {
+			throw new ViewsNotSpecifiedException("Empty views found for controller " . get_class($this) . '. Please specify a valid $views property.');
+		}
+
+		return $this->views . '.' . $path;
+	}
+
+	protected function getEndpoint($path = '')
+	{
+		if(empty($this->endpoint)) {
+			throw new EndpointNotSpecifiedException("Empty endpoint found for controller " . get_class($this) . '. Please specify a valid $endpoint property.');
+		}
+
+		return empty($path) ? $this->endpoint : $this->endpoint . '/' . $path;
 	}
 
 	/**
@@ -79,7 +95,7 @@ class Controller extends AppController
 
 		return $this->response()
 			->success("L'élément a été créée avec succès.")
-			->redirect($this->getModel()->endpoint());
+			->redirect($this->getEndpoint());
 	}
 
 	/**
@@ -126,7 +142,7 @@ class Controller extends AppController
 
 		return $this->response()
 			->success("L'élément a été modifiée avec succès.")
-			->redirect($this->getModel()->endpoint());
+			->redirect($this->getEndpoint());
 	}
 
 	/**
@@ -143,6 +159,6 @@ class Controller extends AppController
 
 		return $this->response()
 			->success("Suppression de l'élément effectué avec succès.")
-			->redirect($this->getModel()->endpoint());
+			->redirect($this->getEndpoint());
 	}
 }

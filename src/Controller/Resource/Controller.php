@@ -6,6 +6,7 @@ use WhiteFrame\Http\Contracts\Eloquent\Model;
 use WhiteFrame\Http\Contracts\Eloquent\Repository;
 use WhiteFrame\Http\Controller\Helpers;
 use WhiteFrame\Http\Exceptions\EntityNotSpecifiedException;
+use WhiteFrame\Http\Exceptions\ViewsNotSpecifiedException;
 
 /**
  * Class Controller
@@ -16,6 +17,16 @@ class Controller extends AppController
 	use Helpers;
 	
 	protected $entity;
+	protected $views;
+
+	protected function getView($path)
+	{
+		if(empty($this->views)) {
+			throw new ViewsNotSpecifiedException("Empty views found for controller " . get_class($this) . '. Please specify a valid $views property.');
+		}
+
+		return $this->views . '.' . $path;
+	}
 
 	/**
 	 * @return Model
@@ -36,21 +47,11 @@ class Controller extends AppController
 	 */
 	public function index(Request $request)
 	{
-		if($request->has('dynatable'))
-			return $this->getDynatable($request);
-
 		return $this->response()
 			->collection($this->getModel()->search($request->input('q', ''))->limit(100)->get())
-			->view($this->getModel()->render()->index());
-	}
-
-	/**
-	 * @param Request $request
-	 * @return mixed
-	 */
-	protected function getDynatable(Request $request)
-	{
-		return $this->getModel()->toDynatable($request->all())->make();
+			->view($this->getView('index'), [
+				'entities' => $this->getModel()->getRepository()->all()->get()
+			]);
 	}
 
 	/**
@@ -61,7 +62,9 @@ class Controller extends AppController
 	public function create()
 	{
 		return $this->response()
-			->view($this->getModel()->render()->create());
+			->view($this->getView('create'), [
+				'entity' => $this->getModel()
+			]);
 	}
 
 	/**
@@ -91,7 +94,9 @@ class Controller extends AppController
 
 		return $this->response()
 			->item($entity)
-			->view($entity->render()->show());
+			->view($this->getView('show'), [
+				'entity' => $this->getModel()->getRepository()->getById($id)
+			]);
 	}
 
 	/**
@@ -103,7 +108,9 @@ class Controller extends AppController
 	public function edit($id)
 	{
 		return $this->response()
-			->view($this->getModel()->getRepository()->getById($id)->render()->edit());
+			->view($this->getView('edit'), [
+				'entity' => $this->getModel()->getRepository()->getById($id)
+			]);
 	}
 
 	/**

@@ -7,6 +7,7 @@ use WhiteFrame\Http\Contracts\Eloquent\Repository;
 use WhiteFrame\Http\Controller\Helpers;
 use WhiteFrame\Http\Exceptions\EndpointNotSpecifiedException;
 use WhiteFrame\Http\Exceptions\EntityNotSpecifiedException;
+use WhiteFrame\Http\Exceptions\InvalidEntityException;
 use WhiteFrame\Http\Exceptions\ViewsNotSpecifiedException;
 
 /**
@@ -30,7 +31,12 @@ class Controller extends AppController
 		if(empty($this->entity))
 			throw new EntityNotSpecifiedException("No valid entity found for controller " . get_class($this) . '. Please specify a valid $entity property.');
 
-		return new $this->entity();
+		$instance = new $this->entity();
+
+		if(!is_a($instance, 'WhiteFrame\Helloquent\Model'))
+			throw new InvalidEntityException("Invalid entity found for controller " . get_class($this) . '. Please check that ' . $this->entity . ' is a valid WhiteFrame\Helloquent\Model class.');
+
+		return $instance;
 	}
 
 	/**

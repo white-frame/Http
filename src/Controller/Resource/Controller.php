@@ -117,7 +117,7 @@ class Controller extends AppController
 		return $this->response()
 			->item($entity)
 			->view($this->getView('show'), [
-				'entity' => $this->getModel()->getRepository()->getById($id)
+				'entity' => $entity
 			]);
 	}
 

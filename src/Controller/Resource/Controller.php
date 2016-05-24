@@ -17,10 +17,11 @@ use WhiteFrame\Http\Exceptions\ViewsNotSpecifiedException;
 class Controller extends AppController
 {
 	use Helpers;
-	
+
 	protected $entity;
 	protected $views;
 	protected $endpoint;
+	protected $request;
 
 	/**
 	 * @return Model
@@ -28,13 +29,15 @@ class Controller extends AppController
 	 */
 	public function getModel()
 	{
-		if(empty($this->entity))
+		if (empty($this->entity)) {
 			throw new EntityNotSpecifiedException("No valid entity found for controller " . get_class($this) . '. Please specify a valid $entity property.');
+		}
 
 		$instance = new $this->entity();
 
-		if(!is_a($instance, 'WhiteFrame\Helloquent\Model'))
+		if (!is_a($instance, 'WhiteFrame\Helloquent\Model')) {
 			throw new InvalidEntityException("Invalid entity found for controller " . get_class($this) . '. Please check that ' . $this->entity . ' is a valid WhiteFrame\Helloquent\Model class.');
+		}
 
 		return $instance;
 	}
@@ -46,7 +49,7 @@ class Controller extends AppController
 	 */
 	protected function getView($path)
 	{
-		if(empty($this->views)) {
+		if (empty($this->views)) {
 			throw new ViewsNotSpecifiedException("Empty views found for controller " . get_class($this) . '. Please specify a valid $views property.');
 		}
 
@@ -55,11 +58,20 @@ class Controller extends AppController
 
 	protected function getEndpoint($path = '')
 	{
-		if(empty($this->endpoint)) {
+		if (empty($this->endpoint)) {
 			throw new EndpointNotSpecifiedException("Empty endpoint found for controller " . get_class($this) . '. Please specify a valid $endpoint property.');
 		}
 
 		return empty($path) ? $this->endpoint : $this->endpoint . '/' . $path;
+	}
+
+	protected function getRequest()
+	{
+		if (empty($this->request)) {
+			return app()->make("Illuminate\Http\Request");
+		} else {
+			return app()->make($this->request);
+		}
 	}
 
 	/**
@@ -69,6 +81,8 @@ class Controller extends AppController
 	 */
 	public function index(Request $request)
 	{
+		$request = $this->getRequest();
+
 		return $this->response()
 			->collection($this->getModel()->search($request->input('q', ''))->limit(100)->get())
 			->view($this->getView('index'), [
@@ -92,11 +106,13 @@ class Controller extends AppController
 	/**
 	 * Store a newly created resource in storage.
 	 *
-	 * @param  \Illuminate\Http\Request  $request
+	 * @param  \Illuminate\Http\Request $request
 	 * @return \Illuminate\Http\Response
 	 */
 	public function store(Request $request)
 	{
+		$request = $this->getRequest();
+
 		$this->getModel()->getRepository()->create($request->all());
 
 		return $this->response()
@@ -107,7 +123,7 @@ class Controller extends AppController
 	/**
 	 * Display the specified resource.
 	 *
-	 * @param  int  $id
+	 * @param  int $id
 	 * @return \Illuminate\Http\Response
 	 */
 	public function show($id)
@@ -124,7 +140,7 @@ class Controller extends AppController
 	/**
 	 * Show the form for editing the specified resource.
 	 *
-	 * @param  int  $id
+	 * @param  int $id
 	 * @return \Illuminate\Http\Response
 	 */
 	public function edit($id)
@@ -138,12 +154,14 @@ class Controller extends AppController
 	/**
 	 * Update the specified resource in storage.
 	 *
-	 * @param  \Illuminate\Http\Request  $request
-	 * @param  int  $id
+	 * @param  \Illuminate\Http\Request $request
+	 * @param  int $id
 	 * @return \Illuminate\Http\Response
 	 */
 	public function update(Request $request, $id)
 	{
+		$request = $this->getRequest();
+
 		$this->getModel()->getRepository()->update($id, $request->all());
 
 		return $this->response()
@@ -154,7 +172,7 @@ class Controller extends AppController
 	/**
 	 * Remove the specified resource from storage.
 	 *
-	 * @param  int  $id
+	 * @param  int $id
 	 * @return \Illuminate\Http\Response
 	 */
 	public function destroy($id)

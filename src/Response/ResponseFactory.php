@@ -72,17 +72,12 @@ class ResponseFactory extends Response
 	 */
 	public function item(Model $model)
 	{
-		if(is_null($model)) {
+		if (is_null($model)) {
 			$datas = [];
-		}
-		elseif($model->hasTransformer()) {
-			$resource = new FractalItem($model, $model->transformer());
+		} else {
+			$resource = new FractalItem($model, $model->transformer($model));
 			$datas = $this->fractal->createData($resource)->toArray()['data'];
 		}
-		else {
-			$datas = $model->toArray();
-		}
-
 		$this->types->get('ajax')->datas($datas);
 
 		return $this;
@@ -93,17 +88,12 @@ class ResponseFactory extends Response
 	 */
 	public function collection(EloquentCollection $models)
 	{
-		if($models->count() == 0) {
+		if ($models->count() == 0) {
 			$datas = [];
-		}
-		elseif($models->first()->hasTransformer()) {
-			$resource = new FractalCollection($models, $models->first()->transformer());
+		} else {
+			$resource = new FractalCollection($models, $models->first()->transformer($models->first()));
 			$datas = $this->fractal->createData($resource)->toArray()['data'];
 		}
-		else {
-			$datas = $models->toArray();
-		}
-
 		$this->types->get('ajax')->datas($datas);
 
 		return $this;
@@ -147,29 +137,23 @@ class ResponseFactory extends Response
 	 */
 	public function send()
 	{
-		if($this->request->ajax() OR $this->request->has('callback')) {
-			if($this->types->get('ajax')->hasValidReponse()) {
+		if ($this->request->ajax() OR $this->request->has('callback')) {
+			if ($this->types->get('ajax')->hasValidReponse()) {
 				$this->types->get('ajax')->get()->send();
-			}
-			else {
+			} else {
 				app()->abort(406, "No response type set for ajax/jsonp response.");
 			}
-		}
-		else {
+		} else {
 			// In all cases, flash messages
 			$this->types->get('browser')->flashMessage();
 
 			// Try to send browser response
-			if($this->types->get('browser')->hasValidReponse()) {
+			if ($this->types->get('browser')->hasValidReponse()) {
 				$this->types->get('browser')->get()->send();
-			}
-
-			// Or send ajax if we have no browser
-			elseif($this->types->get('ajax')->hasValidReponse()) {
+			} // Or send ajax if we have no browser
+			elseif ($this->types->get('ajax')->hasValidReponse()) {
 				$this->types->get('ajax')->get()->send();
-			}
-
-			// Fail if nothing
+			} // Fail if nothing
 			else {
 				app()->abort(406, "No response type set for browser response.");
 			}
@@ -178,7 +162,7 @@ class ResponseFactory extends Response
 
 	protected function status($code = 200, $status = null, $message = null)
 	{
-		$this->types->map(function(ResponseType $type) use ($code, $status, $message) {
+		$this->types->map(function (ResponseType $type) use ($code, $status, $message) {
 			$type->status($code, $status, $message);
 		});
 	}
